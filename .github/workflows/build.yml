@@ -1,0 +1,44 @@
+name: Build mod
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.1.1
+
+      - name: Compilar codigo nuevo
+        run: gradle build --no-daemon
+
+      - name: Unir con el mod original
+        run: |
+          mkdir -p dist
+          python3 tools/merge_jar.py original/instrucciones-2.4.2.jar build/libs/instrucciones-2.5.0.jar dist/instrucciones-2.5.0.jar
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: instrucciones-2.5.0
+          path: dist/instrucciones-2.5.0.jar
+
+      - name: Publicar release con el .jar
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v2.5.0-build${{ github.run_number }}
+          name: Instrucciones 2.5.0 (build ${{ github.run_number }})
+          files: dist/instrucciones-2.5.0.jar
