@@ -1,0 +1,14 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "All Rights Reserved"
+
+[[mods]]
+modId = "instrucciones"
+version = "2.5.0"
+displayName = "Instrucciones"
+description = '''
+Instrucciones + comando /ins backgraund para elegir el fondo.
+'''
+
+[[mixins]]
+config = "instrucciones.mixins.json"
